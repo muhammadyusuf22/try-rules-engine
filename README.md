@@ -51,6 +51,87 @@ src/
 └── app.module.ts        # Main Module
 ```
 
+## 🔄 Rules Engine vs Hardcoded If-Else Comparison
+
+Project ini juga menyediakan **perbandingan langsung** antara Rules Engine dan implementasi hardcoded if-else untuk menunjukkan perbedaan yang jelas.
+
+### Comparison Endpoints
+
+#### Compare Discount Calculation
+
+```http
+POST /comparison/discount-calculation
+Content-Type: application/json
+
+{
+  "user": {
+    "type": "premium",
+    "age": 30,
+    "isFirstTimeBuyer": false,
+    "country": "ID",
+    "verificationLevel": 3
+  },
+  "order": {
+    "amount": 150000,
+    "category": "electronics"
+  }
+}
+```
+
+#### Compare Fraud Detection
+
+```http
+POST /comparison/fraud-detection
+Content-Type: application/json
+
+{
+  "user": {
+    "type": "regular",
+    "age": 30,
+    "isFirstTimeBuyer": false,
+    "country": "ID",
+    "verificationLevel": 2
+  },
+  "transaction": {
+    "amount": 15000000,
+    "country": "ID",
+    "deviceId": "device1",
+    "isNewDevice": false
+  }
+}
+```
+
+#### Performance Analysis
+
+```http
+POST /comparison/performance-analysis
+```
+
+#### Code Complexity Analysis
+
+```http
+GET /comparison/code-complexity
+```
+
+#### Demo Scenarios
+
+```http
+GET /comparison/demo-scenarios
+```
+
+### Key Differences
+
+| Aspect                     | Rules Engine | Hardcoded If-Else |
+| -------------------------- | ------------ | ----------------- |
+| **Code Complexity**        | Low          | High              |
+| **Maintainability**        | High         | Low               |
+| **Flexibility**            | High         | Low               |
+| **Testing**                | Easy         | Difficult         |
+| **Business User Friendly** | Yes          | No                |
+| **Dynamic Updates**        | Yes          | No                |
+
+📖 **Lihat [COMPARISON.md](./COMPARISON.md) untuk analisis mendalam**
+
 ## 🎯 API Endpoints
 
 ### Order Management

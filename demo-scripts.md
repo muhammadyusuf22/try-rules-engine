@@ -276,6 +276,62 @@ curl -X GET http://localhost:3000/analytics/execution-trend
 curl -X GET http://localhost:3000/analytics/recent-executions?limit=10
 ```
 
+## 🔄 COMPARISON DEMO - Rules Engine vs Hardcoded If-Else
+
+### Compare Discount Calculation
+
+```bash
+curl -X POST http://localhost:3000/comparison/discount-calculation \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user": {
+      "type": "premium",
+      "age": 30,
+      "isFirstTimeBuyer": false,
+      "country": "ID",
+      "verificationLevel": 3
+    },
+    "order": {
+      "amount": 150000,
+      "category": "electronics"
+    }
+  }'
+```
+
+### Compare Fraud Detection
+
+```bash
+curl -X POST http://localhost:3000/comparison/fraud-detection \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user": {
+      "type": "regular",
+      "age": 30,
+      "isFirstTimeBuyer": false,
+      "country": "ID",
+      "verificationLevel": 2
+    },
+    "transaction": {
+      "amount": 15000000,
+      "country": "ID",
+      "deviceId": "device1",
+      "isNewDevice": false
+    }
+  }'
+```
+
+### Code Complexity Analysis
+
+```bash
+curl -X GET http://localhost:3000/comparison/code-complexity
+```
+
+### Demo Scenarios
+
+```bash
+curl -X GET http://localhost:3000/comparison/demo-scenarios
+```
+
 ## 🎯 Demo Flow untuk Presentasi
 
 ### 1. Introduction (2 menit)
