@@ -10,6 +10,9 @@ import { RulesManagementService } from './services/rules-management.service';
 import { RulesAnalyticsService } from './services/rules-analytics.service';
 import { OrderWithoutRulesService } from './services/order-without-rules.service';
 import { FraudDetectionWithoutRulesService } from './services/fraud-detection-without-rules.service';
+import { ActionExecutorService } from './services/action-executor.service';
+import { EnhancedRulesEngineService } from './services/enhanced-rules-engine.service';
+import { EnhancedOrderService } from './services/enhanced-order.service';
 
 // Controllers
 import { OrderController } from './controllers/order.controller';
@@ -17,6 +20,7 @@ import { FraudDetectionController } from './controllers/fraud-detection.controll
 import { RulesManagementController } from './controllers/rules-management.controller';
 import { AnalyticsController } from './controllers/analytics.controller';
 import { ComparisonController } from './controllers/comparison.controller';
+import { EnhancedOrderController } from './controllers/enhanced-order.controller';
 
 @Module({
   imports: [],
@@ -27,6 +31,7 @@ import { ComparisonController } from './controllers/comparison.controller';
     RulesManagementController,
     AnalyticsController,
     ComparisonController,
+    EnhancedOrderController,
   ],
   providers: [
     AppService,
@@ -37,6 +42,9 @@ import { ComparisonController } from './controllers/comparison.controller';
     RulesAnalyticsService,
     OrderWithoutRulesService,
     FraudDetectionWithoutRulesService,
+    ActionExecutorService,
+    EnhancedRulesEngineService,
+    EnhancedOrderService,
   ],
 })
 export class AppModule {}
