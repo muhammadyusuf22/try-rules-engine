@@ -125,7 +125,7 @@ Tidak cocok untuk: Simple if-else 1-2 kondisi, performance-critical paths yang b
 ## 🔧 IMPLEMENTASI PRAKTIS DI NESTJS (8 menit)
 
 **Script:**
-"Sekarang kita lihat implementasi praktis. Saya akan tunjukkan step-by-step dari setup sampai penggunaan nyata."
+"Sekarang kita lihat implementasi praktis. Saya akan tunjukkan step-by-step dari setup sampai penggunaan nyata. Yang menarik, saya akan tunjukkan perbandingan langsung antara implementasi dengan Rules Engine vs tanpa Rules Engine, supaya kalian bisa lihat perbedaannya secara nyata."
 
 ### 1. Setup dan Installation
 
@@ -235,6 +235,8 @@ export const discountRules = [
 
 ### 4. Order Service Implementation
 
+#### **✅ Dengan Rules Engine (Clean & Maintainable):**
+
 ```typescript
 // order.service.ts
 import { Injectable } from '@nestjs/common';
@@ -293,7 +295,200 @@ export class OrderService {
 }
 ```
 
+#### **❌ Tanpa Rules Engine (Hard-coded & Maintenance Nightmare):**
+
+```typescript
+// order-without-rules.service.ts
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class OrderWithoutRulesService {
+  async calculateOrderDiscount(user: any, order: any): Promise<any> {
+    const discounts: any[] = [];
+
+    // Rule 1: Premium user + large order
+    if (user.type === 'premium' && order.amount >= 100000) {
+      discounts.push({
+        percentage: 20,
+        priority: 10,
+        reason: 'Premium member large order',
+        amount: (order.amount * 20) / 100,
+      });
+    }
+
+    // Rule 2: Senior + healthcare
+    if (user.age >= 60 && order.category === 'healthcare') {
+      discounts.push({
+        percentage: 15,
+        priority: 8,
+        reason: 'Senior healthcare discount',
+        amount: (order.amount * 15) / 100,
+      });
+    }
+
+    // Rule 3: First time buyer
+    if (user.isFirstTimeBuyer) {
+      discounts.push({
+        percentage: 10,
+        priority: 5,
+        reason: 'Welcome discount',
+        amount: (order.amount * 10) / 100,
+      });
+    }
+
+    // Rule 4: VIP member + electronics
+    if (user.type === 'vip' && order.category === 'electronics') {
+      discounts.push({
+        percentage: 25,
+        priority: 12,
+        reason: 'VIP electronics discount',
+        amount: (order.amount * 25) / 100,
+      });
+    }
+
+    // Rule 5: Bulk order discount
+    if (order.amount >= 500000) {
+      discounts.push({
+        percentage: 12,
+        priority: 6,
+        reason: 'Bulk order discount',
+        amount: (order.amount * 12) / 100,
+      });
+    }
+
+    // Rule 6: Seasonal promotion (hard-coded date!)
+    const currentDate = new Date();
+    const isBlackFriday =
+      currentDate.getMonth() === 10 && currentDate.getDate() === 24;
+    if (isBlackFriday && order.amount >= 50000) {
+      discounts.push({
+        percentage: 30,
+        priority: 15,
+        reason: 'Black Friday special',
+        amount: (order.amount * 30) / 100,
+      });
+    }
+
+    // Rule 7: Weekend special
+    const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
+    if (isWeekend && order.category === 'clothing') {
+      discounts.push({
+        percentage: 8,
+        priority: 3,
+        reason: 'Weekend clothing special',
+        amount: (order.amount * 8) / 100,
+      });
+    }
+
+    // Rule 8: Country-specific discount
+    if (user.country === 'ID' && order.amount >= 200000) {
+      discounts.push({
+        percentage: 5,
+        priority: 2,
+        reason: 'Indonesia special discount',
+        amount: (order.amount * 5) / 100,
+      });
+    }
+
+    // Rule 9: Category-specific discounts
+    if (order.category === 'books' && order.amount >= 100000) {
+      discounts.push({
+        percentage: 15,
+        priority: 7,
+        reason: 'Books category discount',
+        amount: (order.amount * 15) / 100,
+      });
+    }
+
+    // Rule 10: Time-based discount (hard-coded time!)
+    const currentHour = currentDate.getHours();
+    if (currentHour >= 22 || currentHour <= 6) {
+      discounts.push({
+        percentage: 5,
+        priority: 1,
+        reason: 'Night owl discount',
+        amount: (order.amount * 5) / 100,
+      });
+    }
+
+    // Conflict resolution: pilih discount tertinggi
+    let bestDiscount = this.selectBestDiscount(discounts, order.amount);
+
+    return {
+      originalAmount: order.amount,
+      discountAmount: bestDiscount.amount,
+      discountPercentage: bestDiscount.percentage,
+      finalAmount: order.amount - bestDiscount.amount,
+      appliedRule: bestDiscount.reason,
+      availableDiscounts: discounts.length,
+    };
+  }
+
+  private selectBestDiscount(discounts: any[], orderAmount: number) {
+    if (discounts.length === 0) {
+      return { amount: 0, percentage: 0, reason: 'No discount applied' };
+    }
+
+    // Sort by priority first, then by discount amount
+    const sortedDiscounts = discounts.sort(
+      (a, b) => b.priority - a.priority || b.amount - a.amount,
+    );
+
+    return sortedDiscounts[0];
+  }
+}
+```
+
+#### **🔍 Perbandingan Kedua Pendekatan:**
+
+| Aspek               | Dengan Rules Engine          | Tanpa Rules Engine          |
+| ------------------- | ---------------------------- | --------------------------- |
+| **Maintainability** | ✅ Mudah diubah tanpa deploy | ❌ Harus edit kode & deploy |
+| **Business User**   | ✅ Bisa manage rules sendiri | ❌ Harus tunggu developer   |
+| **Testing**         | ✅ Test rules terpisah       | ❌ Test seluruh service     |
+| **Audit Trail**     | ✅ History perubahan rules   | ❌ Hanya git history        |
+| **A/B Testing**     | ✅ Toggle rules on/off       | ❌ Harus deploy code baru   |
+| **Performance**     | ⚠️ 2-5x lebih lambat         | ✅ Lebih cepat              |
+| **Complexity**      | ✅ Rules terorganisir        | ❌ Logic tercampur          |
+| **Scalability**     | ✅ Mudah tambah rules        | ❌ Kode jadi panjang        |
+
+#### **⚠️ Masalah dengan Hard-coded Approach:**
+
+1. **Maintenance Nightmare**: Setiap perubahan aturan bisnis memerlukan:
+   - Developer edit kode
+   - Code review
+   - Testing
+   - Deployment
+   - **Time-to-market: 1-2 minggu**
+
+2. **Business Logic Tercampur**:
+   - Aturan bisnis bercampur dengan logic aplikasi
+   - Sulit untuk business analyst memahami
+   - Risk tinggi untuk bug saat refactoring
+
+3. **Hard-coded Values**:
+
+   ```typescript
+   // ❌ Masalah: Hard-coded date untuk Black Friday
+   const isBlackFriday = currentDate.getMonth() === 10 && currentDate.getDate() === 24;
+
+   // ❌ Masalah: Hard-coded time untuk night discount
+   if (currentHour >= 22 || currentHour <= 6) {
+   ```
+
+4. **Testing Complexity**:
+   - Harus test seluruh service untuk 1 rule baru
+   - Risk regression di rules lain
+   - Mock data jadi kompleks
+
+5. **Scalability Issues**:
+   - Kode jadi panjang (100+ lines untuk 10 rules)
+   - Sulit untuk developer baru memahami
+   - Performance degradation seiring bertambah rules
+
 ### 5. Advanced Example: Fraud Detection
+
+#### **✅ Dengan Rules Engine (Clean & Maintainable):**
 
 ```typescript
 // fraud-detection.rules.ts
@@ -373,6 +568,319 @@ export class FraudDetectionService {
   }
 }
 ```
+
+#### **❌ Tanpa Rules Engine (Hard-coded & Maintenance Nightmare):**
+
+```typescript
+// fraud-detection-without-rules.service.ts
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class FraudDetectionWithoutRulesService {
+  async checkTransaction(user: any, transaction: any): Promise<any> {
+    const userStats = await this.getUserTransactionStats(user.id);
+    const triggers: any[] = [];
+    let maxRiskScore = 0;
+    let isBlocked = false;
+    let requiresApproval = false;
+    const reasons: string[] = [];
+
+    // MIRRORING fraudRules: 1 rule dengan 3 kondisi OR
+    // Rule 1: High amount transaction (SAMA dengan fraudRules)
+    if (transaction.amount > 10000000) {
+      triggers.push({
+        type: 'high-amount',
+        action: 'block',
+        reason: 'Suspicious transaction pattern',
+        risk_score: 90,
+        required_approvals: 2,
+      });
+      isBlocked = true;
+      requiresApproval = true;
+      maxRiskScore = Math.max(maxRiskScore, 90);
+      reasons.push('Suspicious transaction pattern');
+    }
+
+    // Rule 2: Velocity check (SAMA dengan fraudRules)
+    if (userStats.countToday > 10 && userStats.totalToday > 5000000) {
+      triggers.push({
+        type: 'velocity-check',
+        action: 'block',
+        reason: 'Suspicious transaction pattern',
+        risk_score: 90,
+        required_approvals: 2,
+      });
+      isBlocked = true;
+      requiresApproval = true;
+      maxRiskScore = Math.max(maxRiskScore, 90);
+      reasons.push('Suspicious transaction pattern');
+    }
+
+    // Rule 3: Different country + low verification (SAMA dengan fraudRules)
+    if (transaction.country !== user.country && user.verificationLevel < 3) {
+      triggers.push({
+        type: 'different-country',
+        action: 'block',
+        reason: 'Suspicious transaction pattern',
+        risk_score: 90,
+        required_approvals: 2,
+      });
+      isBlocked = true;
+      requiresApproval = true;
+      maxRiskScore = Math.max(maxRiskScore, 90);
+      reasons.push('Suspicious transaction pattern');
+    }
+
+    // TAMBAHAN RULES yang TIDAK ADA di fraudRules (menunjukkan kompleksitas)
+    // Rule 4: New device detection (hard-coded logic!)
+    if (transaction.isNewDevice && transaction.amount > 1000000) {
+      triggers.push({
+        type: 'new-device',
+        action: 'require-approval',
+        reason: 'High amount transaction from new device',
+        risk_score: 70,
+        required_approvals: 1,
+      });
+      requiresApproval = true;
+      maxRiskScore = Math.max(maxRiskScore, 70);
+      reasons.push('High amount transaction from new device');
+    }
+
+    // Rule 5: Unusual time transaction (hard-coded time!)
+    const currentHour = new Date().getHours();
+    if (
+      (currentHour >= 23 || currentHour <= 5) &&
+      transaction.amount > 500000
+    ) {
+      triggers.push({
+        type: 'unusual-time',
+        action: 'require-approval',
+        reason: 'High amount transaction at unusual time',
+        risk_score: 60,
+        required_approvals: 1,
+      });
+      requiresApproval = true;
+      maxRiskScore = Math.max(maxRiskScore, 60);
+      reasons.push('High amount transaction at unusual time');
+    }
+
+    // Rule 6: Card testing pattern (hard-coded logic!)
+    if (userStats.countToday > 5 && userStats.avgAmount < 10000) {
+      triggers.push({
+        type: 'card-testing',
+        action: 'block',
+        reason: 'Potential card testing pattern detected',
+        risk_score: 75,
+        required_approvals: 2,
+      });
+      isBlocked = true;
+      requiresApproval = true;
+      maxRiskScore = Math.max(maxRiskScore, 75);
+      reasons.push('Potential card testing pattern detected');
+    }
+
+    // Rule 7: Geographic anomaly (hard-coded country list!)
+    const highRiskCountries = ['XX', 'YY', 'ZZ']; // Hard-coded!
+    if (
+      highRiskCountries.includes(transaction.country) &&
+      transaction.amount > 100000
+    ) {
+      triggers.push({
+        type: 'high-risk-country',
+        action: 'block',
+        reason: 'Transaction from high-risk country',
+        risk_score: 95,
+        required_approvals: 3,
+      });
+      isBlocked = true;
+      requiresApproval = true;
+      maxRiskScore = Math.max(maxRiskScore, 95);
+      reasons.push('Transaction from high-risk country');
+    }
+
+    // Rule 8: Weekend high amount (hard-coded day check!)
+    const currentDay = new Date().getDay();
+    const isWeekend = currentDay === 0 || currentDay === 6;
+    if (isWeekend && transaction.amount > 2000000) {
+      triggers.push({
+        type: 'weekend-high-amount',
+        action: 'require-approval',
+        reason: 'High amount transaction on weekend',
+        risk_score: 65,
+        required_approvals: 1,
+      });
+      requiresApproval = true;
+      maxRiskScore = Math.max(maxRiskScore, 65);
+      reasons.push('High amount transaction on weekend');
+    }
+
+    // Rule 9: Rapid successive transactions (hard-coded time window!)
+    const timeSinceLastTransaction = await this.getTimeSinceLastTransaction(
+      user.id,
+    );
+    if (timeSinceLastTransaction < 300 && transaction.amount > 500000) {
+      // 5 minutes
+      triggers.push({
+        type: 'rapid-transactions',
+        action: 'require-approval',
+        reason: 'Rapid successive high-amount transactions',
+        risk_score: 70,
+        required_approvals: 1,
+      });
+      requiresApproval = true;
+      maxRiskScore = Math.max(maxRiskScore, 70);
+      reasons.push('Rapid successive high-amount transactions');
+    }
+
+    // Rule 10: Merchant category risk (hard-coded category list!)
+    const highRiskCategories = ['gambling', 'adult', 'crypto'];
+    if (
+      highRiskCategories.includes(transaction.merchantCategory) &&
+      transaction.amount > 100000
+    ) {
+      triggers.push({
+        type: 'high-risk-merchant',
+        action: 'block',
+        reason: 'Transaction with high-risk merchant category',
+        risk_score: 85,
+        required_approvals: 2,
+      });
+      isBlocked = true;
+      requiresApproval = true;
+      maxRiskScore = Math.max(maxRiskScore, 85);
+      reasons.push('Transaction with high-risk merchant category');
+    }
+
+    return {
+      isBlocked,
+      requiresApproval,
+      riskScore: maxRiskScore,
+      reasons,
+      recommendedAction: this.getRecommendedAction(triggers),
+      allTriggers: triggers,
+    };
+  }
+
+  private getRecommendedAction(triggers: any[]): string {
+    if (triggers.some((t) => t.action === 'block')) {
+      return 'BLOCK_TRANSACTION';
+    }
+    if (triggers.some((t) => t.action === 'require-approval')) {
+      return 'REQUIRE_MANUAL_APPROVAL';
+    }
+    return 'ALLOW_TRANSACTION';
+  }
+
+  private async getUserTransactionStats(userId: string): Promise<any> {
+    // Mock implementation - in real app, this would query database
+    return {
+      countToday: 3,
+      totalToday: 1500000,
+      avgAmount: 500000,
+    };
+  }
+
+  private async getTimeSinceLastTransaction(userId: string): Promise<number> {
+    // Mock implementation - in real app, this would query database
+    return 600; // 10 minutes
+  }
+}
+```
+
+#### **🔍 Perbandingan Fraud Detection:**
+
+| Aspek                 | Dengan Rules Engine             | Tanpa Rules Engine          |
+| --------------------- | ------------------------------- | --------------------------- |
+| **Rule Management**   | ✅ Rules terpisah, mudah diubah | ❌ Hard-coded dalam service |
+| **Compliance**        | ✅ Audit trail lengkap          | ❌ Hanya git history        |
+| **Testing**           | ✅ Test individual rules        | ❌ Test seluruh service     |
+| **Performance**       | ⚠️ 2-5x overhead                | ✅ Lebih cepat              |
+| **Maintainability**   | ✅ Business user bisa manage    | ❌ Harus tunggu developer   |
+| **Scalability**       | ✅ Mudah tambah rules baru      | ❌ Kode jadi panjang        |
+| **Hard-coded Values** | ✅ Semua configurable           | ❌ Banyak hard-coded values |
+
+#### **⚠️ Perbedaan Kritis dalam Logic:**
+
+**Dengan Rules Engine (fraudRules):**
+
+```typescript
+// 1 RULE dengan 3 kondisi OR
+conditions: {
+  any: [
+    // ← LOGIC: ANY dari 3 kondisi
+    { fact: 'transaction-amount', operator: 'greaterThan', value: 10000000 },
+    {
+      all: [
+        // ← LOGIC: ALL dari 2 kondisi
+        { fact: 'transaction-count-today', operator: 'greaterThan', value: 10 },
+        { fact: 'total-amount-today', operator: 'greaterThan', value: 5000000 },
+      ],
+    },
+    {
+      all: [
+        // ← LOGIC: ALL dari 2 kondisi
+        { fact: 'is-different-country', operator: 'equal', value: true },
+        { fact: 'user-verification-level', operator: 'lessThan', value: 3 },
+      ],
+    },
+  ];
+}
+// Hasil: 1 event dengan risk_score: 90, action: 'block'
+```
+
+**Tanpa Rules Engine (Hard-coded):**
+
+```typescript
+// 3 RULES TERPISAH dengan LOGIC BERBEDA
+if (transaction.amount > 10000000) {
+  /* risk_score: 90 */
+}
+if (userStats.countToday > 10 && userStats.totalToday > 5000000) {
+  /* risk_score: 90 */
+}
+if (transaction.country !== user.country && user.verificationLevel < 3) {
+  /* risk_score: 90 */
+}
+
+// PLUS 7 RULES TAMBAHAN yang TIDAK ADA di fraudRules
+// New device, unusual time, card testing, dll.
+```
+
+**Masalah:**
+
+1. **Inconsistency**: Rules Engine punya 1 rule, hard-coded punya 10 rules
+2. **Logic Berbeda**: Rules Engine pakai OR logic, hard-coded pakai separate if statements
+3. **Maintenance**: Ubah 1 rule di Rules Engine vs ubah 10 rules di hard-coded
+
+#### **⚠️ Masalah Khusus Fraud Detection tanpa Rules Engine:**
+
+1. **Compliance Nightmare**:
+   - Regulasi AML/KYC berubah setiap 6 bulan
+   - Hard-coded rules sulit di-audit
+   - Risk compliance violation tinggi
+
+2. **Hard-coded Risk Values**:
+
+   ```typescript
+   // ❌ Masalah: Hard-coded country list
+   const highRiskCountries = ['XX', 'YY', 'ZZ'];
+
+   // ❌ Masalah: Hard-coded time window
+   if (timeSinceLastTransaction < 300) { // 5 minutes
+
+   // ❌ Masalah: Hard-coded merchant categories
+   const highRiskCategories = ['gambling', 'adult', 'crypto'];
+   ```
+
+3. **Testing Complexity**:
+   - Harus test 10+ rules sekaligus
+   - Mock data jadi sangat kompleks
+   - Risk false positive/negative tinggi
+
+4. **Business Logic Tercampur**:
+   - Fraud rules bercampur dengan business logic
+   - Sulit untuk compliance officer memahami
+   - Risk human error tinggi
 
 ---
 
