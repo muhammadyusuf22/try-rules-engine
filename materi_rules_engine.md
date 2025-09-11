@@ -1,20 +1,12 @@
-# Rules Engine - Materi Presentasi dan Script Lengkap
+# Rules Engine
 
-## 🎯 AGENDA (2 menit)
+## 🤔 APA ITU RULES ENGINE?
 
-**Script:**
-"Hari ini kita akan membahas Rules Engine. Kita akan cover 7 poin utama: definisi Rules Engine, mengapa kita butuh ini, kapan sebaiknya digunakan, implementasi praktis di NestJS, platform ready-to-use yang bisa langsung dipakai, best practices yang harus diikuti, dan diakhiri dengan demo singkat."
-
----
-
-## 🤔 APA ITU RULES ENGINE? (3 menit)
-
-**Script:**
-"Rules Engine adalah sistem yang mengotomatisasi pengambilan keputusan berdasarkan aturan bisnis. Konsepnya sederhana: IF condition THEN action.
+Rules Engine adalah sistem yang mengotomatisasi pengambilan keputusan berdasarkan aturan bisnis. Konsepnya sederhana: IF condition THEN action.
 
 Mari lihat contoh sederhana: IF user premium member THEN diskon 20%. Atau IF transaksi lebih dari 1 juta THEN perlu approval.
 
-Bedanya dengan if-else biasa adalah Rules Engine memisahkan logic bisnis dari kode aplikasi, sehingga aturan bisa diubah tanpa deployment."
+Bedanya dengan if-else biasa adalah Rules Engine memisahkan logic bisnis dari kode aplikasi, sehingga aturan bisa diubah tanpa deployment.
 
 ### Konsep Dasar
 
@@ -31,10 +23,9 @@ IF (condition) THEN (action)
 
 ---
 
-## 🚀 MENGAPA PERLU RULES ENGINE? (4 menit)
+## 🚀 MENGAPA PERLU RULES ENGINE?
 
-**Script:**
-"Ada 4 alasan utama kenapa kita butuh Rules Engine:
+Ada 4 alasan utama kenapa kita butuh Rules Engine:
 
 Pertama, Separation of Concerns. Bayangkan kode kita penuh dengan if-else kompleks untuk business logic. Setiap ada perubahan aturan bisnis, kita harus buka kode, edit, test, deploy. Dengan Rules Engine, aturan dipisah dari kode aplikasi.
 
@@ -42,7 +33,7 @@ Kedua, Non-technical users bisa manage rules. Business analyst bisa langsung uba
 
 Ketiga, Consistency dan Auditability. Semua aturan terpusat, ada history perubahan, dan mudah untuk audit compliance.
 
-Keempat, A/B Testing dan Experimentation jadi mudah karena rules bisa di-toggle on/off."
+Keempat, A/B Testing dan Experimentation jadi mudah karena rules bisa di-toggle on/off.
 
 ### 1. Separation of Concerns
 
@@ -89,14 +80,13 @@ const discount = await rulesEngine.execute('discount-calculation', {
 
 ---
 
-## 🎪 KAPAN MENGGUNAKAN RULES ENGINE? (3 menit)
+## 🎪 KAPAN MENGGUNAKAN RULES ENGINE?
 
-**Script:**
-"Rules Engine bukan silver bullet. Ada kondisi dimana cocok dan tidak cocok.
+Rules Engine bukan silver bullet. Ada kondisi dimana cocok dan tidak cocok.
 
 Cocok untuk: Complex business logic dengan banyak kondisi, aturan yang sering berubah seperti pricing atau promo, compliance requirements seperti KYC, aplikasi multi-tenant dengan aturan berbeda per client.
 
-Tidak cocok untuk: Simple if-else 1-2 kondisi, performance-critical paths yang butuh response microsecond, atau aturan yang sudah stable dan jarang berubah."
+Tidak cocok untuk: Simple if-else 1-2 kondisi, performance-critical paths yang butuh response microsecond, atau aturan yang sudah stable dan jarang berubah.
 
 ### ✅ **Cocok untuk:**
 
@@ -122,10 +112,9 @@ Tidak cocok untuk: Simple if-else 1-2 kondisi, performance-critical paths yang b
 
 ---
 
-## 🔧 IMPLEMENTASI PRAKTIS DI NESTJS (8 menit)
+## 🔧 IMPLEMENTASI PRAKTIS DI NESTJS
 
-**Script:**
-"Sekarang kita lihat implementasi praktis. Saya akan tunjukkan step-by-step dari setup sampai penggunaan nyata. Yang menarik, saya akan tunjukkan perbandingan langsung antara implementasi dengan Rules Engine vs tanpa Rules Engine, supaya kalian bisa lihat perbedaannya secara nyata."
+Sekarang kita lihat implementasi praktis. Saya akan tunjukkan step-by-step dari setup sampai penggunaan nyata. Yang menarik, saya akan tunjukkan perbandingan langsung antara implementasi dengan Rules Engine vs tanpa Rules Engine, supaya kalian bisa lihat perbedaannya secara nyata.
 
 ### 1. Setup dan Installation
 
@@ -884,10 +873,9 @@ if (transaction.country !== user.country && user.verificationLevel < 3) {
 
 ---
 
-## 📊 DYNAMIC RULES MANAGEMENT (3 menit)
+## 📊 DYNAMIC RULES MANAGEMENT
 
-**Script:**
-"Fitur powerful dari Rules Engine adalah kemampuan mengubah rules secara dinamis. Rules bisa disimpan di database dan di-reload tanpa restart aplikasi."
+Fitur powerful dari Rules Engine adalah kemampuan mengubah rules secara dinamis. Rules bisa disimpan di database dan di-reload tanpa restart aplikasi.
 
 ```typescript
 // rules-management.service.ts
@@ -938,10 +926,9 @@ export class RulesManagementService {
 
 ---
 
-## 🛠️ PLATFORM ALTERNATIF - READY-TO-USE SOLUTIONS (3 menit)
+## 🛠️ PLATFORM ALTERNATIF - READY-TO-USE SOLUTIONS
 
-**Script:**
-"Sebelum kita lanjut ke best practices, penting untuk tahu bahwa kalian nggak harus bikin Rules Engine dari scratch. Ada banyak platform yang sudah siap pakai dengan berbagai level kompleksitas dan pricing."
+Sebelum kita lanjut ke best practices, penting untuk tahu bahwa kalian nggak harus bikin Rules Engine dari scratch. Ada banyak platform yang sudah siap pakai dengan berbagai level kompleksitas dan pricing.
 
 ### **🚀 Cloud-Based Platforms (Recommended untuk Startup)**
 
@@ -973,7 +960,7 @@ export class RulesManagementService {
 ### **⚡️ Quick Implementation Example**
 
 ```javascript
-// DecisionRules API integration (5 menit setup)
+// DecisionRules API integration
 const response = await fetch(
   'https://api.decisionrules.io/rule/{ruleId}/solve',
   {
@@ -1008,15 +995,13 @@ const discount = await response.json();
 | Camunda DMN       | 1 week     | Medium         | ⭐⭐⭐⭐    | ⭐⭐⭐⭐        | Free/$$$ |
 | json-rules-engine | 1 day      | Easy           | ⭐          | ⭐⭐⭐⭐⭐      | Free     |
 
-**Script lanjutan:**
-"Jadi pilihan kalian ada 3: build from scratch untuk full control, pakai library seperti json-rules-engine untuk balance between control dan speed, atau langsung pakai platform seperti DecisionRules untuk fastest time-to-market."
+Jadi pilihan kalian ada 3: build from scratch untuk full control, pakai library seperti json-rules-engine untuk balance between control dan speed, atau langsung pakai platform seperti DecisionRules untuk fastest time-to-market.
 
 ---
 
-## 🎯 BEST PRACTICES & PITFALLS (2 menit)
+## 🎯 BEST PRACTICES & PITFALLS
 
-**Script:**
-"Sekarang tips penting untuk implementasi yang sukses dan menghindari kesalahan umum."
+Sekarang tips penting untuk implementasi yang sukses dan menghindari kesalahan umum.
 
 ### ✅ **Best Practices:**
 
@@ -1120,10 +1105,9 @@ app.post('/api/checkout', async (req, res) => {
 
 ---
 
-## 📈 MONITORING & OBSERVABILITY (1 menit)
+## 📈 MONITORING & OBSERVABILITY
 
-**Script:**
-"Monitoring sangat penting untuk Rules Engine production. Kita perlu track performance, rule usage, dan error rate."
+Monitoring sangat penting untuk Rules Engine production. Kita perlu track performance, rule usage, dan error rate.
 
 ```typescript
 // rules-analytics.service.ts
@@ -1161,14 +1145,13 @@ export class RulesAnalyticsService {
 
 ---
 
-## 🎯 KEY TAKEAWAYS & NEXT STEPS (1 menit)
+## 🎯 KEY TAKEAWAYS & NEXT STEPS
 
-**Script:**
-"Untuk menutup, ini key takeaways yang perlu diingat: Rules Engine cocok untuk complex dan frequently changing business logic. Pisahkan business logic dari application code. Empowers business team untuk manage rules sendiri. Testing sama pentingnya dengan testing kode biasa. Always monitor performance dan rule usage. Dan yang terakhir, jangan over-engineer simple logic.
+Untuk menutup, ini key takeaways yang perlu diingat: Rules Engine cocok untuk complex dan frequently changing business logic. Pisahkan business logic dari application code. Empowers business team untuk manage rules sendiri. Testing sama pentingnya dengan testing kode biasa. Always monitor performance dan rule usage. Dan yang terakhir, jangan over-engineer simple logic.
 
 Yang terpenting, kalian punya banyak pilihan implementasi - dari build sendiri sampai pakai platform ready-to-use. Pilih yang sesuai dengan timeline dan budget project.
 
-Next steps untuk kalian: Identify use cases di project yang cocok untuk rules engine, start small dengan satu feature dulu, build monitoring dari awal, train business team, dan scale gradually."
+Next steps untuk kalian: Identify use cases di project yang cocok untuk rules engine, start small dengan satu feature dulu, build monitoring dari awal, train business team, dan scale gradually.
 
 ### **Key Takeaways:**
 
@@ -1199,8 +1182,7 @@ Next steps untuk kalian: Identify use cases di project yang cocok untuk rules en
 
 ## 🚀 DEMO OUTLINE (jika waktu tersisa)
 
-**Script untuk Demo:**
-"Mari saya tunjukkan demo singkat bagaimana Rules Engine bekerja dalam aplikasi nyata."
+Mari saya tunjukkan demo singkat bagaimana Rules Engine bekerja dalam aplikasi nyata.
 
 ### Demo Scenario: E-commerce Discount System
 
