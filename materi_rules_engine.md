@@ -3,7 +3,7 @@
 ## 🎯 AGENDA (2 menit)
 
 **Script:**
-"Hari ini kita akan membahas Rules Engine dalam 27 menit. Kita akan cover 7 poin utama: definisi Rules Engine, mengapa kita butuh ini, kapan sebaiknya digunakan, implementasi praktis di NestJS, platform ready-to-use yang bisa langsung dipakai, best practices yang harus diikuti, dan diakhiri dengan demo singkat."
+"Hari ini kita akan membahas Rules Engine. Kita akan cover 7 poin utama: definisi Rules Engine, mengapa kita butuh ini, kapan sebaiknya digunakan, implementasi praktis di NestJS, platform ready-to-use yang bisa langsung dipakai, best practices yang harus diikuti, dan diakhiri dengan demo singkat."
 
 ---
 
